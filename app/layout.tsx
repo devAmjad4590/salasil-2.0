@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Head from "next/head";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -25,11 +26,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en"  suppressHydrationWarning>
+    <html lang="en">
       <head>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
       </head>
-      <body  suppressHydrationWarning
+      <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <NavBar />

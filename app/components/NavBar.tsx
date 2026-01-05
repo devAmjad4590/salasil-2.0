@@ -10,10 +10,11 @@ const NavBar = () => {
   ]
     return (
         <header className="sticky  top-0 z-50 bg-[#1C2739] backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div className="max-w-full px-8 mx-auto h-16 flex items-center justify-between">
+
                 <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
           {navs.map((nav) => (
-                        <a key={nav.name} className="text-slate-600 dark:text-slate-300 hover:text-primary dark:hover:text-primary transition-colors" href={nav.href}>
+                        <a key={nav.name} className="text-slate-400 hover:text-slate-200 transition-colors text-lg font-bold" href={nav.href}>
                             {nav.name}
                         </a>
                     ))}
@@ -27,6 +28,7 @@ const NavBar = () => {
                         Title
                     </a>
                 </div>
+
             </div>
         </header>
     );

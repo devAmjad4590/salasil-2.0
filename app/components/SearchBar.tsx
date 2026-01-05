@@ -3,7 +3,7 @@ import React from 'react';
 
 const SearchBar = () => {
     return (
-        <div className="flex-1 max-w-lg mx-auto px-4">
+        <div className="flex-1 max-w-xl mx-auto px-4">
             <div className="relative group">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <span className="material-icons-round text-slate-400 group-focus-within:text-primary">search</span>
