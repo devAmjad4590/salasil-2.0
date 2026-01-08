@@ -20,3 +20,15 @@ export function transformPlaylistToCardProps(playlist: Playlist): PlaylistCardPr
     tags: tagsArray,
   };
 }
+
+export function transformSinglePlaylist(playlist: Playlist): Playlist {
+  const transformedVideos = playlist.الفيديوهات.map(video => ({
+    ...video,
+    youtubeUrl: video["رابط"] // Use the existing 'رابط' as youtubeUrl
+  }));
+
+  return {
+    ...playlist,
+    الفيديوهات: transformedVideos
+  };
+}

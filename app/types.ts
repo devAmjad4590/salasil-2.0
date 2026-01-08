@@ -6,6 +6,7 @@ export interface Video {
     "رابط": string;
     "مدة": string;
     "تاريخ": string | null;
+    "youtubeUrl"?: string;
 }
 
 export interface Playlist {
