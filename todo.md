@@ -10,3 +10,5 @@ This file tracks the major issues and tasks for the Salasil 2.0 project.
 - **[FEATURE]** Implement the tab-switching logic and placeholder UI for the `VideoDetailsTabs` component (Search, Summary, Transcription).
 - **[FEATURE]** Ensure basic video player functionalities (play, pause, seek, volume) are working correctly with the chosen library.
 - **[REFACTOR]** Refactor the playlist page to correctly handle state management between client and server components, which is the root cause of many of the above issues.
+
+- we dont have a fetch by playlist function...... so need to find a solution to that

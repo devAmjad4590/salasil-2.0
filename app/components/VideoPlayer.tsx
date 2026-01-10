@@ -12,12 +12,17 @@ interface VideoPlayerProps {
 const VideoPlayer = ({ playlist }: VideoPlayerProps) => {
   const videoNode = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
-  const [currentVideo, setCurrentVideo] = useState<Video | null>(() => {
+  const [currentVideo, setCurrentVideo] = useState<Video | null>(null);
+
+  // This effect synchronizes the internal state with the playlist prop.
+  // It runs when the playlist prop changes, updating the video to the first one in the new playlist.
+  useEffect(() => {
     if (playlist && playlist.الفيديوهات && playlist.الفيديوهات.length > 0) {
-      return playlist.الفيديوهات[0];
+      setCurrentVideo(playlist.الفيديوهات[0]);
+    } else {
+      setCurrentVideo(null);
     }
-    return null;
-  });
+  }, [playlist]);
 
   useEffect(() => {
     if (!currentVideo || !videoNode.current) return;
@@ -29,7 +34,6 @@ const VideoPlayer = ({ playlist }: VideoPlayerProps) => {
         controls: true,
         responsive: true,
         fluid: true,
-        poster: currentVideo['صورة مصغرة'],
         techOrder: ['youtube'],
         sources: [{
           src: currentVideo.youtubeUrl || '',
@@ -41,7 +45,6 @@ const VideoPlayer = ({ playlist }: VideoPlayerProps) => {
     } else {
       const player = playerRef.current;
       player.src({ src: currentVideo.youtubeUrl || '', type: 'video/youtube' });
-      player.poster(currentVideo['صورة مصغرة']);
     }
 
     // Cleanup function

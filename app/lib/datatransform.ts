@@ -17,6 +17,7 @@ export function transformPlaylistToCardProps(playlist: Playlist): PlaylistCardPr
       ? playlist.الفيديوهات[0]["صورة مصغرة"]
       : "/next.svg",
     playlistId: playlist["معرف قائمة التشغيل"],
+    course: playlist["الفيديوهات"],
     tags: tagsArray,
   };
 }

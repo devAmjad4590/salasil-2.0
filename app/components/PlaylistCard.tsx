@@ -1,12 +1,14 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { Video } from '../types';
 
 export interface PlaylistCardProps {
     title: string;
     description: string;
     imageUrl: string;
     playlistId: string;
+    course: Video[];
     tags: string[];
 }
 

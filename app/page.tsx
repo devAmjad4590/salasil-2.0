@@ -3,6 +3,7 @@ import { Playlist } from './types';
 import fs from 'fs/promises';
 import path from 'path';
 import { transformPlaylistToCardProps } from "./lib/datatransform";
+import StoreInitializer from "./components/StoreInitializer";
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
@@ -14,18 +15,18 @@ async function getPlaylists(): Promise<Playlist[]> {
 }
 
 export default async function Home() {
-  const playlists = await getPlaylists();
-  const transformedPlaylists = playlists.map(transformPlaylistToCardProps);
+  const data = await getPlaylists();
 
   return (
     <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <StoreInitializer playlists={data} />
       <div className="text-center mb-10">
         <h1 className="text-6xl font-bold tracking-tight text-white mb-2">سلاسل</h1>
         <p className="text-slate-400 mt-4 max-w-2xl mx-auto">
           استكشف عالمًا من المحتوى المنسق المصمم للوضوح والتركيز.
         </p>
       </div>
-      <PlaylistGrid playlists={transformedPlaylists} />
+      <PlaylistGrid />
     </main>
   );
 }

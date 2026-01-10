@@ -1,20 +1,17 @@
-import React from 'react';
 import fs from 'fs';
 import path from 'path';
-import VideoPlayer from '../../components/VideoPlayer';
-import PlaylistSidebar from '../../components/PlaylistSidebar';
-import VideoDetailsTabs from '../../components/VideoDetailsTabs';
-import { Playlist as Course, SalasilData } from '../../types';
-import { transformSinglePlaylist } from '../../lib/datatransform';
+import { Playlist, SalasilData } from '../../types';
+import ClientPlaylistPage from '../../components/ClientPlaylistPage';
 
-// Helper function to read the data
+// Helper function to read the data for static generation
 async function getSalasilData(): Promise<SalasilData> {
   const filePath = path.join(process.cwd(), 'public', 'salasil.json');
   const jsonData = await fs.promises.readFile(filePath, 'utf-8');
-  // In `salasil.json`, the top-level array is called `courses`, which matches our SalasilData type
   return JSON.parse(jsonData);
 }
 
+// This Server-side function generates the list of all possible playlist pages
+// at build time, which is great for performance and SEO (ISR).
 export async function generateStaticParams() {
   const data = await getSalasilData();
   // Generate paths for the first 22 playlists
@@ -23,32 +20,25 @@ export async function generateStaticParams() {
   }));
 }
 
-const PlaylistPage = async (props: { params: { id: string } }) => {
-  const params = await props.params;
+async function getPlaylist(id: string): Promise<Playlist | undefined> {
   const data = await getSalasilData();
-  const rawPlaylist = data.courses.find(
-    (course) => course['معرف قائمة التشغيل'] == params.id
-  );
+  return data.courses.find(course => course['معرف قائمة التشغيل'] === id);
+}
 
-  if (!rawPlaylist) {
-    return <div>Playlist not found</div>;
+// This is the main page component. It's a Server Component.
+const PlaylistPage = async (props: { params: Promise<{ id: string }> }) => {
+  // Explicitly await the params promise to resolve it.
+  const params = await props.params;
+
+  // On the server, we fetch the specific playlist data for the initial render.
+  const playlist = await getPlaylist(params.id);
+
+  if (!playlist) {
+    return <div className="text-white text-center py-12">قائمة التشغيل غير موجودة.</div>;
   }
 
-  const playlist = transformSinglePlaylist(rawPlaylist);
-
-  return (
-    <main className="max-w-7xl mx-auto px-4 py-8 md:px-6 md:py-12">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-        <div className="lg:col-span-2 flex flex-col gap-6">
-          <VideoPlayer playlist={playlist} />
-        </div>
-        <div className="lg:col-span-1">
-          <PlaylistSidebar playlist={playlist} />
-        </div>
-      </div>
-      <VideoDetailsTabs />
-    </main>
-  );
+  // We pass the id and the initial server-fetched data to the client component.
+  return <ClientPlaylistPage id={params.id} initialPlaylist={playlist} />;
 };
 
 export default PlaylistPage;
