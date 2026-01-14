@@ -1,9 +1,9 @@
-"use client";
+'use client';
 import React, { useEffect, useRef, useState } from 'react';
 import videojs from 'video.js';
 import 'video.js/dist/video-js.css';
 import 'videojs-youtube';
-import { Playlist as Course, Video } from '../types';
+import { Playlist as Course, Video } from '../../../types';
 
 interface VideoPlayerProps {
   playlist: Course;
@@ -29,19 +29,25 @@ const VideoPlayer = ({ playlist }: VideoPlayerProps) => {
 
     if (!playerRef.current) {
       // The DOM element needs a `data-vjs-player` attribute for Video.js to recognize it
-      const player = playerRef.current = videojs(videoNode.current, {
-        autoplay: false,
-        controls: true,
-        responsive: true,
-        fluid: true,
-        techOrder: ['youtube'],
-        sources: [{
-          src: currentVideo.youtubeUrl || '',
-          type: 'video/youtube',
-        }],
-      }, () => {
-        console.log('player is ready');
-      });
+      const player = (playerRef.current = videojs(
+        videoNode.current,
+        {
+          autoplay: false,
+          controls: true,
+          responsive: true,
+          fluid: true,
+          techOrder: ['youtube'],
+          sources: [
+            {
+              src: currentVideo.youtubeUrl || '',
+              type: 'video/youtube',
+            },
+          ],
+        },
+        () => {
+          console.log('player is ready');
+        },
+      ));
     } else {
       const player = playerRef.current;
       player.src({ src: currentVideo.youtubeUrl || '', type: 'video/youtube' });
@@ -55,7 +61,7 @@ const VideoPlayer = ({ playlist }: VideoPlayerProps) => {
       }
     };
   }, [currentVideo]);
-  
+
   // Dispose the player when the component unmounts
   useEffect(() => {
     const player = playerRef.current;
@@ -85,9 +91,7 @@ const VideoPlayer = ({ playlist }: VideoPlayerProps) => {
       <div className="flex flex-col gap-2 p-2">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">
-              {currentVideo['عنوان']}
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{currentVideo['عنوان']}</h1>
             <p className="text-lg text-gray-600 dark:text-gray-400">
               تقديم <span className="font-medium text-primary">{playlist['المقدمين']}</span>
             </p>
