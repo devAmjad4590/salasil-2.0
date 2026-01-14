@@ -9,6 +9,12 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/vi/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   // You can add other Next.js config options here
