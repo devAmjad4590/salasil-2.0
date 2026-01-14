@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { usePlaylistStore } from '../store/usePlaylistStore';
+import { usePlaylistStore } from '@/app/store/usePlaylistStore';
 import FilterGrid from './FilterGrid';
 import PlaylistCard from './PlaylistCard';
 

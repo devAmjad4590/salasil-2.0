@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
-import { Playlist, SalasilData } from '../../types';
-import ClientPlaylistPage from '../../components/ClientPlaylistPage';
+import { Playlist, SalasilData } from '@/app/types';
+import ClientPlaylistPage from './components/ClientPlaylistPage';
 
 // Helper function to read the data for static generation
 async function getSalasilData(): Promise<SalasilData> {

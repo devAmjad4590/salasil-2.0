@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from 'react';
-import { Playlist as Course } from '../types';
+import { Playlist as Course } from '@/app/types';
 import VideoContent from './VideoContent';
 import Notes from './Notes';
 

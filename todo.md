@@ -12,3 +12,4 @@ This file tracks the major issues and tasks for the Salasil 2.0 project.
 - **[REFACTOR]** Refactor the playlist page to correctly handle state management between client and server components, which is the root cause of many of the above issues.
 
 - we dont have a fetch by playlist function...... so need to find a solution to that
+- create a selected masaar and playlist page

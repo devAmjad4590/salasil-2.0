@@ -1,8 +1,5 @@
-import { Playlist } from '../types';
-
-// It's a good practice to define the props for the transformed data.
-// In this case, we can reuse the PlaylistCardProps from the component.
-import { PlaylistCardProps } from '../components/PlaylistCard';
+import { Playlist } from '@/app/types';
+import { PlaylistCardProps } from '@/app/(home)/components/PlaylistCard';
 
 export function transformPlaylistToCardProps(playlist: Playlist): PlaylistCardProps {
   const rawTags = playlist["التصانيف"];

@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { Playlist } from "../types";
-import { PlaylistCardProps } from "../components/PlaylistCard";
+import { Playlist } from "@/app/types";
+import { PlaylistCardProps } from "@/app/(home)/components/PlaylistCard";
 
 interface PlaylistState {
   // State variables

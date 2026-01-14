@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from 'react';
-import { usePlaylistStore } from '../store/usePlaylistStore';
-import { Playlist } from '../types';
-import { transformPlaylistToCardProps } from '../lib/datatransform';
+import { usePlaylistStore } from '@/app/store/usePlaylistStore';
+import { Playlist } from '@/app/types';
+import { transformPlaylistToCardProps } from '@/app/lib/datatransform';
 
 interface StoreInitializerProps {
   // The home page passes the raw playlist data

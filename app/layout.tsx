@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: "تطبيق مكتبة إسلامية",
 };
 
-import NavBar from "./components/NavBar";
+import NavBar from "./shared/components/NavBar";
 
 export default function RootLayout({
   children,

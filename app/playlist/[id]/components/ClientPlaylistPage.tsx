@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { usePlaylistStore } from '@/app/store/usePlaylistStore';
-import VideoPlayer from '@/app/components/VideoPlayer';
-import PlaylistSidebar from '@/app/components/PlaylistSidebar';
-import VideoDetailsTabs from '@/app/components/VideoDetailsTabs';
+import VideoPlayer from './VideoPlayer';
+import PlaylistSidebar from './PlaylistSidebar';
+import VideoDetailsTabs from './VideoDetailsTabs';
 import { transformSinglePlaylist } from '@/app/lib/datatransform';
 import { Playlist } from '@/app/types';
 
