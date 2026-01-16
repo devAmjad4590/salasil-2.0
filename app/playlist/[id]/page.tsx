@@ -8,7 +8,7 @@ import path from 'path';
 export const revalidate = 3600; // Revalidate every hour
 
 export async function generateStaticParams() {
-  const filePath = path.join(process.cwd(), 'public', 'salasil.json');
+  const filePath = path.join(process.cwd(), 'public', 'salasel.json');
   const jsonData = await fs.readFile(filePath, 'utf-8');
   const data = JSON.parse(jsonData);
   const playlists: Playlist[] = data.courses;
@@ -19,7 +19,7 @@ export async function generateStaticParams() {
 }
 
 async function getPlaylist(id: string): Promise<Playlist | undefined> {
-  const filePath = path.join(process.cwd(), 'public', 'salasil.json');
+  const filePath = path.join(process.cwd(), 'public', 'salasel.json');
   const jsonData = await fs.readFile(filePath, 'utf-8');
   const data = JSON.parse(jsonData);
   return data.courses.find((course: Playlist) => course['معرف قائمة التشغيل'] === id);

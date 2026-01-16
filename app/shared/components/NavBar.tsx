@@ -21,12 +21,6 @@ const NavBar: React.FC = () => {
     setIsDrawerOpen(false)
   }
 
-<<<<<<< HEAD
-    return (
-        <>
-            <header className="sticky  top-0 z-10 bg-surface-dark backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
-                <div className="max-w-full px-4 sm:px-6 md:px-8 lg:px-28 mx-auto h-16 flex items-center justify-between">
-=======
   return (
     <>
       <header className="sticky  top-0 z-10 bg-[#1C2739] backdrop-blur-md border-b border-slate-200 dark:border-slate-700">
@@ -72,6 +66,5 @@ const NavBar: React.FC = () => {
     </>
   )
 }
->>>>>>> 389875c87462a1fa36510b57d71b8edb221276ff
 
 export default NavBar

@@ -1,13 +1,7 @@
-<<<<<<< HEAD
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavBar from "./shared/components/NavBar";
-=======
-import type { Metadata } from 'next'
-import { Geist, Geist_Mono } from 'next/font/google'
-import './globals.css'
->>>>>>> 389875c87462a1fa36510b57d71b8edb221276ff
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -82,11 +76,6 @@ export const metadata: Metadata = {
   },
 }
 
-<<<<<<< HEAD
-=======
-import NavBar from './shared/components/NavBar'
-
->>>>>>> 389875c87462a1fa36510b57d71b8edb221276ff
 export default function RootLayout({
   children,
 }: Readonly<{
