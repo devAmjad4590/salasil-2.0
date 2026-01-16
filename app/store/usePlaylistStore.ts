@@ -1,6 +1,7 @@
+import type { Playlist } from '@/app/types'
+import type { PlaylistCardProps } from '@/app/(home)/components/PlaylistCard'
+
 import { create } from 'zustand'
-import { Playlist } from '@/app/types'
-import { PlaylistCardProps } from '@/app/(home)/components/PlaylistCard'
 import { filters } from '@/app/static'
 
 interface PlaylistState {

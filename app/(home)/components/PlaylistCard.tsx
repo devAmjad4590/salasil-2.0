@@ -1,7 +1,8 @@
+import type { Video } from '@/app/types'
+
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { Video } from '@/app/types'
 
 export interface PlaylistCardProps {
   title: string

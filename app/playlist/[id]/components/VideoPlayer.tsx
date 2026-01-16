@@ -1,10 +1,11 @@
 'use client'
 
+import type { Playlist as Course, Video } from '@/app/types'
+
 import React, { useEffect, useRef, useState } from 'react'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import 'videojs-youtube'
-import { Playlist as Course, Video } from '../../../types'
 import { by, noVideos } from '@/app/static'
 
 interface VideoPlayerProps {

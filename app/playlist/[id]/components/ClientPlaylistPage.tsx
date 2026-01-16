@@ -1,12 +1,13 @@
 'use client'
 
+import type { Playlist } from '@/app/types'
+
 import React, { useEffect, useState } from 'react'
 import { usePlaylistStore } from '@/app/store/usePlaylistStore'
 import VideoPlayer from './VideoPlayer'
 import PlaylistSidebar from './PlaylistSidebar'
 import VideoDetailsTabs from './VideoDetailsTabs'
 import { transformSinglePlaylist } from '@/app/lib/datatransform'
-import { Playlist } from '@/app/types'
 import { loading } from '@/app/static'
 
 interface ClientPlaylistPageProps {

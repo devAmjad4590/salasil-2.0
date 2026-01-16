@@ -1,8 +1,9 @@
 'use client'
 
+import type { Playlist } from '@/app/types'
+
 import { useEffect, useRef } from 'react'
 import { usePlaylistStore } from '@/app/store/usePlaylistStore'
-import { Playlist } from '@/app/types'
 import { transformPlaylistToCardProps } from '@/app/lib/datatransform'
 
 interface StoreInitializerProps {

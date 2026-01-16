@@ -1,5 +1,5 @@
-import { Playlist } from '@/app/types'
-import { PlaylistCardProps } from '@/app/(home)/components/PlaylistCard'
+import type { Playlist } from '@/app/types'
+import type { PlaylistCardProps } from '@/app/(home)/components/PlaylistCard'
 
 export function transformPlaylistToCardProps(playlist: Playlist): PlaylistCardProps {
   const rawTags = playlist['التصانيف']

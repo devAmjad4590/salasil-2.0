@@ -1,5 +1,6 @@
+import type { Playlist } from '../types'
+
 import PlaylistGrid from './components/PlaylistGrid'
-import { Playlist } from '../types'
 import fs from 'fs/promises'
 import path from 'path'
 import StoreInitializer from '@/app/shared/components/StoreInitializer'

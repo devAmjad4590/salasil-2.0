@@ -1,5 +1,6 @@
+import type { Video } from '@/app/types'
+
 import React from 'react'
-import { Video } from '../../../types'
 
 interface VideoContentProps {
   videos: Video[]
