@@ -5,16 +5,19 @@ import { usePlaylistStore } from '@/app/store/usePlaylistStore'
 import FilterGrid from './FilterGrid'
 import PlaylistCard from './PlaylistCard'
 import { filters } from '@/app/static'
+import { Playlist } from '@/app/types' // Import Playlist type
 
-const PlaylistGrid: React.FC = () => {
-  // This component now gets all its data directly from the client-side store
-  const { activeFilter, rawPlaylists } = usePlaylistStore()
+interface PlaylistGridProps {
+  playlists: Playlist[]
+}
 
-  const filteredPlaylists = rawPlaylists.filter((playlist) => {
+const PlaylistGrid: React.FC<PlaylistGridProps> = ({ playlists }) => {
+  const { activeFilter } = usePlaylistStore()
+
+  const filteredPlaylists = playlists.filter((playlist) => {
     if (activeFilter === filters[0]) {
       return true
     }
-    // The 'categories' property exists on the 'Playlist' type in the store
     return playlist.categories.includes(activeFilter as any)
   })
 
@@ -31,4 +34,3 @@ const PlaylistGrid: React.FC = () => {
 }
 
 export default PlaylistGrid
-

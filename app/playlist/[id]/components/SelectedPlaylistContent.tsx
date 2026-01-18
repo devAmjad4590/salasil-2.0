@@ -1,12 +1,13 @@
 'use client'
 // app/playlist/[id]/components/SelectedPlaylistContent.tsx
 import ContentCard from './ContentCard'
-import { usePlaylistStore } from '@/app/store/usePlaylistStore'
+import { Playlist } from '@/app/types'
 
-const SelectedPlaylistContent = () => {
-  const { rawPlaylists } = usePlaylistStore()
-  const playlist = rawPlaylists[0]
+interface SelectedPlaylistContentProps {
+  playlist: Playlist
+}
 
+const SelectedPlaylistContent: React.FC<SelectedPlaylistContentProps> = ({ playlist }) => {
   if (!playlist) {
     return <div>Loading...</div>
   }
