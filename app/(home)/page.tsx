@@ -1,22 +1,15 @@
 import type { Playlist } from '../types'
 
 import PlaylistGrid from './components/PlaylistGrid'
-import fs from 'fs/promises'
-import path from 'path'
 import StoreInitializer from '@/app/shared/components/StoreInitializer'
 import { title, description } from '@/app/static'
+import { getSalaselData } from '../lib/datatransform'
 
 export const revalidate = 60 // Revalidate every 60 seconds
 
-async function getPlaylists(): Promise<Playlist[]> {
-  const filePath = path.join(process.cwd(), 'public', 'salasel.json')
-  const jsonData = await fs.readFile(filePath, 'utf-8')
-  const data = JSON.parse(jsonData)
-  return data.courses.slice(0, 22)
-}
-
 export default async function Home() {
-  const data = await getPlaylists()
+  const { courses } = getSalaselData()
+  const data: Playlist[] = courses.slice(0, 22)
 
   return (
     <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">

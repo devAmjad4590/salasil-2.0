@@ -12,27 +12,27 @@ const SelectedPlaylistCard = ({ playlist }: { playlist: Playlist }) => {
         return <div>جاري التحميل...</div>; // Or some other loading state
     }
 
-    const videoId = playlist.الفيديوهات?.[0]?.['معرف الفيديو'];
+    const videoId = playlist.videos?.[0]?.id;
     const imageUrl = videoId
         ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
-        : playlist.الفيديوهات?.[0]?.['صورة مصغرة'] || "";
+        : "";
 
     return (
         <div dir="rtl" className="bg-card-light dark:bg-card-dark rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
             <div className="flex flex-col lg:flex-row">
                 <div className="p-6 lg:w-1/2 flex flex-col justify-center space-y-4">
                     <div>
-                        <h1 className="text-3xl font-extrabold text-text-light dark:text-text-dark mb-2 tracking-tight">{playlist.الاسم}</h1>
+                        <h1 className="text-3xl font-extrabold text-text-light dark:text-text-dark mb-2 tracking-tight">{playlist.name}</h1>
                         <div className="flex items-center space-x-4 text-sm text-muted-light dark:text-muted-dark font-medium">
-                            <span className="flex items-center"><span className="material-icons-round text-base ml-1">schedule</span> {playlist['المدة الإجمالية (بالساعات)']}</span>
+                            <span className="flex items-center"><span className="material-icons-round text-base ml-1">schedule</span> {playlist.duration}</span>
                             <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                            <span className="flex items-center"><span className="material-icons-round text-base ml-1">ondemand_video</span> {playlist['عدد الحلقات']} فيديو</span>
+                            <span className="flex items-center"><span className="material-icons-round text-base ml-1">ondemand_video</span> {playlist.episodesCount} فيديو</span>
                             <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                            <span>المقدم: {playlist.المقدمين}</span>
+                            <span>المقدم: {playlist.participants.join(', ')}</span>
                         </div>
                     </div>
                     <p className="mt-2 text-base text-gray-600 dark:text-gray-300 leading-relaxed">
-                        {playlist['وصف مختصر']}
+                        {playlist.description}
                     </p>
                     <div className="mt-4 space-y-2">
                         <div className="flex justify-between text-xs font-semibold text-muted-light dark:text-muted-dark">
@@ -53,7 +53,7 @@ const SelectedPlaylistCard = ({ playlist }: { playlist: Playlist }) => {
                 <div className="lg:w-1/2 relative bg-gray-100 dark:bg-gray-800 h-[350px]">
                     {isLoading && <div className="shimmer-wrapper"></div>}
                     <Image
-                        alt={playlist.الاسم}
+                        alt={playlist.name}
                         className={`w-full h-full object-cover transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
                         src={imageUrl}
                         fill={true}

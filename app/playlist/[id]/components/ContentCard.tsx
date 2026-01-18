@@ -7,18 +7,20 @@ interface ContentCardProps {
     duration: string;
     completed?: boolean;
     highlight?: boolean;
+    videoId: string;
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({ lessonNumber, title, duration, completed, highlight }) => {
+const ContentCard: React.FC<ContentCardProps> = ({ lessonNumber, title, duration, completed, highlight, videoId }) => {
+    const imageUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
     return (
         <div className={`group relative hover:bg-gray-50 dark:hover:bg-gray-700/30 transition-colors cursor-pointer p-4 sm:px-6 ${highlight ? 'bg-gray-50 dark:bg-gray-700/30' : ''}`}>
             <div className="flex items-center">
                 <div className="flex-shrink-0 mr-4">
                     <div className="w-48 aspect-video bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden relative shadow-sm group-hover:shadow-md transition-shadow">
                         <Image
-                            alt="Code structure diagram"
+                            alt={title}
                             className="w-full h-full object-cover object-center opacity-80 group-hover:opacity-100 transition-opacity"
-                            src="http://img.youtube.com/vi/nkil1U1GxdA/maxresdefault.jpg"
+                            src={imageUrl}
                             fill={true}
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/0 transition-colors">

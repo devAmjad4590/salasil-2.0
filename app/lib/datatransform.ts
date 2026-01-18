@@ -1,30 +1,80 @@
-import type { Playlist } from '@/app/types'
-import type { PlaylistCardProps } from '@/app/(home)/components/PlaylistCard'
+import {
+  Categories,
+  ContentTypes,
+  Playlist,
+  PresentationTypes,
+  SalaselData,
+  Video,
+} from '@/app/types'
+import jsonData from '@/public/salasel.json'
 
-export function transformPlaylistToCardProps(playlist: Playlist): PlaylistCardProps {
-  const rawTags = playlist['التصانيف']
-  const tagsArray =
-    typeof rawTags === 'string' && rawTags.trim() !== '' ? rawTags.split(',').map((tag) => tag.trim()) : []
-
+// This is the "plug in and plug out" function
+export function getSalaselData(): SalaselData {
   return {
-    title: playlist['الاسم'],
-    description: playlist['وصف مختصر'],
-    imageUrl:
-      playlist.الفيديوهات && playlist.الفيديوهات.length > 0 ? playlist.الفيديوهات[0]['صورة مصغرة'] : '/next.svg',
-    playlistId: playlist['معرف قائمة التشغيل'],
-    course: playlist['الفيديوهات'],
-    tags: tagsArray,
+    courses: jsonData.courses.map(transformJsonPlaylist),
   }
 }
 
-export function transformSinglePlaylist(playlist: Playlist): Playlist {
-  const transformedVideos = playlist.الفيديوهات.map((video) => ({
-    ...video,
-    youtubeUrl: video['رابط'], // Use the existing 'رابط' as youtubeUrl
-  }))
+function transformJsonPlaylist(originalPlaylist: any): Playlist {
+  const videos =
+    originalPlaylist.الفيديوهات?.map((video: any) =>
+      transformJsonVideo(video, originalPlaylist['معرف قائمة التشغيل']),
+    ) ?? []
 
   return {
-    ...playlist,
-    الفيديوهات: transformedVideos,
+    id: originalPlaylist['معرف قائمة التشغيل'],
+    channel: 'فاهم بودكast',
+    name: originalPlaylist['الاسم'],
+    description: originalPlaylist['وصف مختصر'],
+    participants: originalPlaylist['المقدمين']
+      ? originalPlaylist['المقدمين'].split(',').map((p: string) => p.trim())
+      : [],
+    language: originalPlaylist['اللغة'] === 'العربية' ? 'ar' : 'en',
+    type: mapContentType(originalPlaylist['المجال']),
+    presentation: PresentationTypes.Podcast, // Assuming Podcast for now
+    categories: mapCategories(originalPlaylist['التصانيف']),
+    duration: originalPlaylist['المدة الإجمالية (بالساعات)'],
+    episodesCount: originalPlaylist['عدد الحلقات'],
+    startDate: originalPlaylist['تاريخ أول حلقة'],
+    endDate: originalPlaylist['تاريخ آخر حلقة'],
+    videos: videos,
   }
+}
+
+function transformJsonVideo(
+  originalVideo: any,
+  playlistId: string,
+): Video {
+  return {
+    id: originalVideo['معرف الفيديو'],
+    playlistId: playlistId,
+    title: originalVideo['عنوان'],
+    duration: originalVideo['مدة'],
+    date: originalVideo['تاريخ'],
+  }
+}
+
+function mapContentType(domain: string): ContentTypes {
+  switch (domain) {
+    case 'تزكوي':
+      return ContentTypes.Awareness
+    default:
+      return ContentTypes.Educational
+  }
+}
+
+function mapCategories(categories: string): Categories[] {
+  if (!categories) {
+    return []
+  }
+  return categories.split(',').map((c) => {
+    const trimmed = c.trim()
+    if (trimmed === 'فطرة' || trimmed === 'دين' || trimmed === 'نفس') {
+      return trimmed as Categories
+    }
+    // Handle cases where the category is not one of the allowed values
+    // For now, we'll filter them out, but you might want to handle this differently
+    return null
+  })
+  .filter((c) => c !== null) as Categories[]
 }

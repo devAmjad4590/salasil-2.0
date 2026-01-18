@@ -8,14 +8,14 @@ import { filters } from '@/app/static'
 
 const PlaylistGrid: React.FC = () => {
   // This component now gets all its data directly from the client-side store
-  const { activeFilter, cardPlaylists } = usePlaylistStore()
+  const { activeFilter, rawPlaylists } = usePlaylistStore()
 
-  const filteredPlaylists = cardPlaylists.filter((playlistCard) => {
+  const filteredPlaylists = rawPlaylists.filter((playlist) => {
     if (activeFilter === filters[0]) {
       return true
     }
-    // The 'tags' property exists on the 'PlaylistCardProps' type in the store
-    return playlistCard.tags.includes(activeFilter)
+    // The 'categories' property exists on the 'Playlist' type in the store
+    return playlist.categories.includes(activeFilter as any)
   })
 
   return (
@@ -23,7 +23,7 @@ const PlaylistGrid: React.FC = () => {
       <FilterGrid />
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
         {filteredPlaylists.map((playlist) => (
-          <PlaylistCard key={playlist.playlistId} {...playlist} />
+          <PlaylistCard key={playlist.id} playlist={playlist} />
         ))}
       </div>
     </>
@@ -31,3 +31,4 @@ const PlaylistGrid: React.FC = () => {
 }
 
 export default PlaylistGrid
+
