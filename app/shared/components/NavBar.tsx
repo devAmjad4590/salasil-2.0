@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
+import Link from 'next/link'
 import SearchBar from './SearchBar'
 import Drawer from './Drawer'
 import { title, navs } from '@/app/static'
@@ -39,9 +40,9 @@ const NavBar: React.FC = () => {
           </button>
           <SearchBar />
           <div className="flex items-center justify-end">
-            <a className="text-lg font-bold tracking-tight text-slate-900 dark:text-white" href="#">
+            <Link className="text-lg font-bold tracking-tight text-slate-900 dark:text-white" href="/">
               {title}
-            </a>
+            </Link>
           </div>
         </div>
       </header>
