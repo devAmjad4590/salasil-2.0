@@ -12,10 +12,10 @@ interface ContentCardProps {
 }
 
 const ContentCard: React.FC<ContentCardProps> = ({ lessonNumber, title, duration, completed, highlight, videoId }) => {
-    const [isCompleted, setIsCompleted] = useState(completed); // Use local state for completed status
+    const [isCompleted, setIsCompleted] = useState(completed || false); // Use local state for completed status
 
     useEffect(() => {
-        setIsCompleted(completed); // Update local state if prop changes
+        setIsCompleted(completed || false); // Update local state if prop changes
     }, [completed]);
 
     const handleCheckboxChange = () => {
