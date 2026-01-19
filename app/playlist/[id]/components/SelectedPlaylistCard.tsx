@@ -4,8 +4,9 @@ import Image from 'next/image';
 import { usePlaylistStore } from '@/app/store/usePlaylistStore';
 import { useEffect, useState } from 'react';
 import { Playlist } from '@/app/types';
+import Link from 'next/link';
 
-const SelectedPlaylistCard = ({ playlist }: { playlist: Playlist }) => {
+const SelectedPlaylistCard = ({ playlist, firstVideoId }: { playlist: Playlist, firstVideoId: string }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     if (!playlist) {
@@ -44,10 +45,10 @@ const SelectedPlaylistCard = ({ playlist }: { playlist: Playlist }) => {
                         </div>
                     </div>
                     <div className="mt-4">
-                        <button className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all transform hover:scale-105 cursor-pointer">
+                        <Link href={`/playlist/${playlist.id}/${firstVideoId}`} className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all transform hover:scale-105 cursor-pointer">
                             <span className="material-icons-round mr-2">play_arrow</span>
                             متابعة المشاهدة
-                        </button>
+                        </Link>
                     </div>
                 </div>
                 <div className="lg:w-1/2 relative bg-gray-100 dark:bg-gray-800 aspect-video">

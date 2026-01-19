@@ -15,4 +15,6 @@ This file tracks the major issues and tasks for the Salasel 2.0 project.
 
 
 - retrieve the video player page from previous git commits
+- make the continue watching button take you to the latest watch video (right now its set to the first video, later remove that logic once you implement the localstorage progress)
+- add a localstroage to save up the user's playlist progress
 

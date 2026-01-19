@@ -1,17 +1,17 @@
 'use client'
 
-import type { Playlist as Course } from '@/app/types'
-
+import type { Playlist } from '@/app/types'
 import React, { useState } from 'react'
 import VideoContent from './VideoContent'
 import Notes from './Notes'
 import { contentTab, noContent, notesTab } from '@/app/static'
 
 interface PlaylistSidebarProps {
-  playlist: Course
+  playlist: Playlist;
+  currentVideoId: string;
 }
 
-const PlaylistSidebar: React.FC<PlaylistSidebarProps> = ({ playlist }) => {
+const PlaylistSidebar: React.FC<PlaylistSidebarProps> = ({ playlist, currentVideoId }) => {
   const [activeTab, setActiveTab] = useState('content')
 
   return (
@@ -39,8 +39,8 @@ const PlaylistSidebar: React.FC<PlaylistSidebarProps> = ({ playlist }) => {
         </button>
       </div>
       <div className="flex-1 flex flex-col p-4 overflow-hidden">
-        {activeTab === 'content' && playlist && playlist.الفيديوهات && playlist.الفيديوهات.length > 0 ? (
-          <VideoContent videos={playlist.الفيديوهات} />
+        {activeTab === 'content' && playlist && playlist.videos && playlist.videos.length > 0 ? (
+          <VideoContent videos={playlist.videos} currentVideoId={currentVideoId} playlistId={playlist.id} />
         ) : activeTab === 'content' ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-gray-500">{noContent}</p>
