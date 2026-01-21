@@ -39,11 +39,6 @@ const VideoPlayerPage = async ({ params: paramsPromise }: { params: Promise<{ id
 
     const { playlist, video } = data;
 
-    // HACK: The VideoPlayer component was refactored to directly accept video and playlist props.
-    // It's no longer necessary to create a "fake" playlist here.
-    // The previous structure in VideoPlayer.tsx required the creation of a "fake" playlist.
-    // With the recent refactor, it now directly takes the 'video' and 'playlist' objects.
-
     return (
         <main dir='rtl' className="w-full max-w-full mx-auto px-4 md:px-6 lg:px-8 pt-4 pb-16">
             <div className="grid grid-cols-1 gap-6 lg:gap-8">

@@ -2,12 +2,32 @@
 // app/playlist/[id]/components/SelectedPlaylistContent.tsx
 import ContentCard from './ContentCard'
 import { Playlist } from '@/app/types'
+import { useState, useEffect } from 'react'
+import { getWatchedVideos, addWatchedVideo, removeWatchedVideo } from '@/app/lib/localStorage'
 
 interface SelectedPlaylistContentProps {
   playlist: Playlist
 }
 
 const SelectedPlaylistContent: React.FC<SelectedPlaylistContentProps> = ({ playlist }) => {
+    const [watchedVideos, setWatchedVideos] = useState<string[]>([]);
+
+    useEffect(() => {
+        setWatchedVideos(getWatchedVideos(playlist.id));
+    }, [playlist.id]);
+
+    const handleToggleWatched = (videoId: string) => {
+        const wasWatched = watchedVideos.includes(videoId);
+
+        if (wasWatched) {
+            removeWatchedVideo(playlist.id, videoId);
+            setWatchedVideos(watchedVideos.filter(id => id !== videoId));
+        } else {
+            addWatchedVideo(playlist.id, videoId);
+            setWatchedVideos([...watchedVideos, videoId]);
+        }
+    };
+
   if (!playlist) {
     return <div>Loading...</div>
   }
@@ -29,6 +49,8 @@ const SelectedPlaylistContent: React.FC<SelectedPlaylistContentProps> = ({ playl
             duration={video.duration}
             videoId={video.id}
             playlistId={playlist.id}
+            completed={watchedVideos.includes(video.id)}
+            onToggle={handleToggleWatched}
           />
         ))}
       </div>

@@ -1,5 +1,5 @@
 'use client'
-
+import { addWatchedVideo } from '@/app/lib/localStorage';
 import type { Playlist, Video } from '@/app/types'
 import React, { useEffect, useRef } from 'react'
 import 'video.js/dist/video-js.css'
@@ -45,6 +45,9 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
             console.log('player is ready');
           }
         ));
+        player.on('ended', () => {
+            addWatchedVideo(playlist.id, video.id);
+        });
       } else {
         const player = playerRef.current;
         player.src({ src: videoSrc, type: 'video/youtube' });
@@ -53,7 +56,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
 
     initVideoJs();
 
-  }, [video]);
+  }, [video, playlist.id]);
 
   // Dispose the player when the component unmounts
   useEffect(() => {

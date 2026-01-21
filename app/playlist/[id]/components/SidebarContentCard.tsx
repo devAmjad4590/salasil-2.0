@@ -1,27 +1,33 @@
-// app/playlist/[id]/components/SidebarContentCard.tsx
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { addWatchedVideo, getWatchedVideos, removeWatchedVideo } from '@/app/lib/localStorage';
 
 interface SidebarContentCardProps {
     lessonNumber: number;
     title: string;
     duration: string;
-    completed?: boolean;
     highlight?: boolean;
     videoId: string;
     playlistId: string;
 }
 
-const SidebarContentCard: React.FC<SidebarContentCardProps> = ({ lessonNumber, title, duration, completed, highlight, videoId, playlistId }) => {
-    const [isCompleted, setIsCompleted] = useState(completed || false);
+const SidebarContentCard: React.FC<SidebarContentCardProps> = ({ lessonNumber, title, duration, highlight, videoId, playlistId }) => {
+    const [isCompleted, setIsCompleted] = useState(false);
 
     useEffect(() => {
-        setIsCompleted(completed || false);
-    }, [completed]);
+        const watchedVideos = getWatchedVideos(playlistId);
+        setIsCompleted(watchedVideos.includes(videoId));
+    }, [playlistId, videoId]);
 
     const handleCheckboxChange = (e: React.MouseEvent) => {
         e.preventDefault();
-        setIsCompleted(!isCompleted);
+        const newCompletedState = !isCompleted;
+        setIsCompleted(newCompletedState);
+        if (newCompletedState) {
+            addWatchedVideo(playlistId, videoId);
+        } else {
+            removeWatchedVideo(playlistId, videoId);
+        }
     };
 
     return (

@@ -1,6 +1,5 @@
 // app/playlist/[id]/components/ContentCard.tsx
 import Image from 'next/image';
-import { useState, useEffect } from 'react'; // Import useState and useEffect
 import Link from 'next/link';
 
 interface ContentCardProps {
@@ -11,23 +10,19 @@ interface ContentCardProps {
     highlight?: boolean;
     videoId: string;
     playlistId: string;
+    onToggle: (videoId: string) => void;
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({ lessonNumber, title, duration, completed, highlight, videoId, playlistId }) => {
-    const [isCompleted, setIsCompleted] = useState(completed || false); // Use local state for completed status
-
-    useEffect(() => {
-        setIsCompleted(completed || false); // Update local state if prop changes
-    }, [completed]);
+const ContentCard: React.FC<ContentCardProps> = ({ lessonNumber, title, duration, completed, highlight, videoId, playlistId, onToggle }) => {
 
     const handleCheckboxChange = (e: React.MouseEvent) => {
         e.preventDefault(); // Prevent navigation when clicking the checkbox
-        setIsCompleted(!isCompleted); // Toggle local completed state
+        onToggle(videoId);
     };
 
     const imageUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
     return (
-        <Link href={`/playlist/${playlistId}/${videoId}`} dir="rtl" className={`block group relative transition-colors cursor-pointer p-4 sm:px-6 ${highlight ? 'bg-gray-50 dark:bg-gray-700/30' : ''} ${isCompleted ? 'bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-800/50' : 'hover:bg-gray-50 dark:hover:bg-gray-700/30'}`}>
+        <Link href={`/playlist/${playlistId}/${videoId}`} dir="rtl" className={`block group relative transition-colors cursor-pointer p-4 sm:px-6 ${highlight ? 'bg-gray-50 dark:bg-gray-700/30' : ''} ${completed ? 'bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-800/50' : 'hover:bg-gray-50 dark:hover:bg-gray-700/30'}`}>
             <div className="grid grid-cols-[1fr_auto] items-center gap-4">
                 <div className="flex items-center">
                     <div className="flex-shrink-0">
@@ -39,7 +34,7 @@ const ContentCard: React.FC<ContentCardProps> = ({ lessonNumber, title, duration
                                 fill={true}
                             />
                             <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/0 transition-colors">
-                                {isCompleted ? (
+                                {completed ? (
                                     <span className="material-icons-round text-green-400 text-3xl drop-shadow-md">check_circle</span>
                                 ) : (
                                     <span className="material-icons-round text-white text-2xl drop-shadow-md">play_circle</span>
@@ -56,7 +51,9 @@ const ContentCard: React.FC<ContentCardProps> = ({ lessonNumber, title, duration
                     </div>
                 </div>
                 <div onClick={handleCheckboxChange} className="relative z-20 p-2">
-                    <input type="checkbox" className="form-checkbox h-6 w-6 sm:h-5 sm:w-5 text-primary rounded-full focus:ring-primary flex-shrink-0" checked={isCompleted} readOnly />
+                    <div className={`w-6 h-6 sm:w-5 sm:h-5 border-2 rounded-full flex items-center justify-center transition-all ${completed ? 'bg-primary border-primary' : 'border-gray-400 group-hover:border-primary'}`}>
+                        {completed && <span className="material-icons-round text-white text-base">check</span>}
+                    </div>
                 </div>
             </div>
         </Link>
