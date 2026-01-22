@@ -23,7 +23,7 @@ function transformJsonPlaylist(originalPlaylist: any): Playlist {
 
   return {
     id: originalPlaylist['معرف قائمة التشغيل'],
-    channel: 'فاهم بودكast',
+    channel: 'فاهم بودكاست',
     name: originalPlaylist['الاسم'],
     description: originalPlaylist['وصف مختصر'],
     participants: originalPlaylist['المقدمين']
