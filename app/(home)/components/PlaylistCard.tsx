@@ -3,6 +3,7 @@ import type { Playlist } from '@/app/types'
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { getVideoThumbnailUrl } from '@/app/static'
 
 interface PlaylistCardProps {
   playlist: Playlist
@@ -10,10 +11,7 @@ interface PlaylistCardProps {
 
 const PlaylistCard: React.FC<PlaylistCardProps> = ({ playlist }) => {
   const { name, description, id, videos } = playlist
-  const imageUrl =
-    videos && videos.length > 0 && videos[0].id
-      ? `https://img.youtube.com/vi/${videos[0].id}/sddefault.jpg`
-      : '/next.svg'
+  const imageUrl = getVideoThumbnailUrl(videos[0]?.id)
 
   return (
     <Link href={`/playlist/${id}`}>

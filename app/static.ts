@@ -38,3 +38,8 @@ export const transcriptionTab = 'النص'
 export const contentTab = 'المحتوى'
 export const notesTab = 'ملاحظات'
 export const foundResults = 'عُثر على نتائج'
+
+export function getVideoThumbnailUrl(videoId: string | undefined): string {
+  return videoId ? `https://img.youtube.com/vi/${videoId}/sddefault.jpg` : '/next.svg'
+}
+

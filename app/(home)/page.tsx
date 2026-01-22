@@ -4,11 +4,13 @@ import PlaylistGrid from './components/PlaylistGrid'
 import { title, description } from '@/app/static'
 import { getSalaselData } from '../lib/datatransform'
 
-export const revalidate = 60 // Revalidate every 60 seconds
+export const revalidate = 3600 // Revalidate every hour
 
 export default function Home() {
   const { courses } = getSalaselData()
-  const data: Playlist[] = courses.slice(0, 22)
+  const data: Playlist[] = courses.slice(0, 22) // change 22 just for dev purposes.
+  // later we need to implement more courses to display as the user scroll to the bottom. (recommended)
+  // OR, display all courses
 
   return (
     <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
