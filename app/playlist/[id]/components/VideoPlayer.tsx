@@ -4,6 +4,7 @@ import type { Playlist, Video } from '@/app/types'
 import React, { useEffect, useRef } from 'react'
 import 'video.js/dist/video-js.css'
 import { by, noVideos } from '@/app/static'
+import { useRouter } from 'next/navigation';
 
 interface VideoPlayerProps {
   video: Video;
@@ -13,6 +14,7 @@ interface VideoPlayerProps {
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
   const videoNode = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const initVideoJs = async () => {
@@ -47,6 +49,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
         ));
         player.on('ended', () => {
             addWatchedVideo(playlist.id, video.id);
+            const currentIndex = playlist.videos.findIndex(v => v.id === video.id);
+            if (currentIndex !== -1 && currentIndex < playlist.videos.length - 1) {
+                const nextVideo = playlist.videos[currentIndex + 1];
+                router.push(`/playlist/${playlist.id}/${nextVideo.id}`);
+            }
         });
       } else {
         const player = playerRef.current;
@@ -56,7 +63,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
 
     initVideoJs();
 
-  }, [video, playlist.id]);
+  }, [video, playlist.id, router]);
 
   // Dispose the player when the component unmounts
   useEffect(() => {

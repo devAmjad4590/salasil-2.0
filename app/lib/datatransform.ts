@@ -11,11 +11,11 @@ import jsonData from '@/public/salasel.json'
 // This is the "plug in and plug out" function
 export function getSalaselData(): SalaselData {
   return {
-    courses: jsonData.courses.map(transformJsonPlaylist),
+    courses: jsonData.courses.map(transformSinglePlaylist),
   }
 }
 
-function transformJsonPlaylist(originalPlaylist: any): Playlist {
+export function transformSinglePlaylist(originalPlaylist: any): Playlist {
   const videos =
     originalPlaylist.الفيديوهات?.map((video: any) =>
       transformJsonVideo(video, originalPlaylist['معرف قائمة التشغيل']),

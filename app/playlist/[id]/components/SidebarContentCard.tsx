@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { addWatchedVideo, getWatchedVideos, removeWatchedVideo } from '@/app/lib/localStorage';
 
 interface SidebarContentCardProps {
     lessonNumber: number;
@@ -9,29 +7,19 @@ interface SidebarContentCardProps {
     highlight?: boolean;
     videoId: string;
     playlistId: string;
+    completed: boolean;
+    onToggle: (videoId: string) => void;
 }
 
-const SidebarContentCard: React.FC<SidebarContentCardProps> = ({ lessonNumber, title, duration, highlight, videoId, playlistId }) => {
-    const [isCompleted, setIsCompleted] = useState(false);
-
-    useEffect(() => {
-        const watchedVideos = getWatchedVideos(playlistId);
-        setIsCompleted(watchedVideos.includes(videoId));
-    }, [playlistId, videoId]);
+const SidebarContentCard: React.FC<SidebarContentCardProps> = ({ lessonNumber, title, duration, highlight, videoId, playlistId, completed, onToggle }) => {
 
     const handleCheckboxChange = (e: React.MouseEvent) => {
         e.preventDefault();
-        const newCompletedState = !isCompleted;
-        setIsCompleted(newCompletedState);
-        if (newCompletedState) {
-            addWatchedVideo(playlistId, videoId);
-        } else {
-            removeWatchedVideo(playlistId, videoId);
-        }
+        onToggle(videoId);
     };
 
     return (
-        <Link href={`/playlist/${playlistId}/${videoId}`} dir="rtl" className={`block group relative transition-colors cursor-pointer p-3 ${highlight ? 'bg-gray-50 dark:bg-gray-700/30' : ''} ${isCompleted ? 'bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-800/50' : 'hover:bg-gray-50 dark:hover:bg-gray-700/30'}`}>
+        <Link href={`/playlist/${playlistId}/${videoId}`} dir="rtl" className={`block group relative transition-colors cursor-pointer p-3 ${highlight ? 'bg-gray-50 dark:bg-gray-700/30' : ''} ${completed ? 'bg-green-50 dark:bg-green-900/30 hover:bg-green-100 dark:hover:bg-green-800/50' : 'hover:bg-gray-50 dark:hover:bg-gray-700/30'}`}>
             <div className="grid grid-cols-[1fr_auto] items-center gap-3">
                 <div className="flex items-center">
                     <div className="mr-3">
@@ -41,7 +29,9 @@ const SidebarContentCard: React.FC<SidebarContentCardProps> = ({ lessonNumber, t
                     </div>
                 </div>
                 <div onClick={handleCheckboxChange} className="relative z-20 p-1">
-                    <input type="checkbox" className="form-checkbox h-5 w-5 text-primary rounded-full focus:ring-primary flex-shrink-0" checked={isCompleted} readOnly />
+                    <div className={`h-5 w-5 rounded-full border-2 flex items-center justify-center transition-colors ${completed ? 'bg-primary border-primary' : 'border-gray-300 dark:border-gray-600'}`}>
+                        {completed && <span className="material-icons-round text-white text-base">done</span>}
+                    </div>
                 </div>
             </div>
         </Link>
