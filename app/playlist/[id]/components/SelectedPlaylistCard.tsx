@@ -22,33 +22,45 @@ const SelectedPlaylistCard = ({ playlist, firstVideoId }: { playlist: Playlist, 
         <div dir="rtl" className="bg-card-light dark:bg-card-dark rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-700">
             <div className="flex flex-col lg:flex-row">
                 <div className="p-6 lg:w-1/2 flex flex-col justify-center space-y-4">
-                    <div>
-                        <h1 className="text-3xl font-extrabold text-text-light dark:text-text-dark mb-2 tracking-tight">{playlist.name}</h1>
-                        <div className="flex items-center space-x-4 text-sm text-muted-light dark:text-muted-dark font-medium">
-                            <span className="flex items-center"><span className="material-icons-round text-base ml-1">schedule</span> {playlist.duration}</span>
-                            <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                            <span className="flex items-center"><span className="material-icons-round text-base ml-1">ondemand_video</span> {playlist.episodesCount} فيديو</span>
-                            <span className="w-1 h-1 bg-gray-400 rounded-full"></span>
-                            <span>المقدم: {playlist.participants.join(', ')}</span>
-                        </div>
-                    </div>
-                    <p className="mt-2 text-base text-gray-600 dark:text-gray-300 leading-relaxed">
+                    {/* 1. Reordered Information */}
+                    <h1 className="text-3xl font-extrabold text-text-light dark:text-text-dark mb-2 tracking-tight">{playlist.name}</h1>
+                    <p className="text-base text-gray-600 dark:text-gray-300 leading-relaxed">
                         {playlist.description}
                     </p>
-                    <div className="mt-4 space-y-2">
-                        <div className="flex justify-between text-xs font-semibold text-muted-light dark:text-muted-dark">
-                            <span>التقدم</span>
-                            <span>0%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 overflow-hidden">
-                            <div className="bg-primary h-2.5 rounded-full" style={{ width: '0%' }}></div>
-                        </div>
+                    <div className="text-sm text-muted-light dark:text-muted-dark font-medium">
+                        <span>بمشاركة: {playlist.participants.join(', ')}</span>
                     </div>
-                    <div className="mt-4">
-                        <Link href={`/playlist/${playlist.id}/${firstVideoId}`} className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all transform hover:scale-105 cursor-pointer">
-                            <span className="material-icons-round mr-2">play_arrow</span>
-                            متابعة المشاهدة
-                        </Link>
+
+                    {/* 2. New Multi-column metadata list */}
+                    <div className="grid grid-cols-2 gap-x-6 gap-y-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                        <div className="flex items-center space-x-2">
+                            <span className="material-icons-round text-base ml-1 text-primary">schedule</span>
+                            <span className="flex flex-col">
+                                <span className="text-sm font-semibold text-text-light dark:text-text-dark">المدة</span>
+                                <span className="text-xs text-muted-light dark:text-muted-dark">{playlist.duration}</span>
+                            </span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span className="material-icons-round text-base ml-1 text-primary">ondemand_video</span>
+                            <span className="flex flex-col">
+                                <span className="text-sm font-semibold text-text-light dark:text-text-dark">الفيديوهات</span>
+                                <span className="text-xs text-muted-light dark:text-muted-dark">{playlist.episodesCount} فيديو</span>
+                            </span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span className="material-icons-round text-base ml-1 text-primary">translate</span>
+                            <span className="flex flex-col">
+                                <span className="text-sm font-semibold text-text-light dark:text-text-dark">اللغة</span>
+                                <span className="text-xs text-muted-light dark:text-muted-dark">العربية</span>
+                            </span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                            <span className="material-icons-round text-base ml-1 text-primary">category</span>
+                            <span className="flex flex-col">
+                                <span className="text-sm font-semibold text-text-light dark:text-text-dark">التصنيف</span>
+                                <span className="text-xs text-muted-light dark:text-muted-dark">{playlist.categories.join(', ')}</span>
+                            </span>
+                        </div>
                     </div>
                 </div>
                 <div className="lg:w-1/2 relative bg-gray-100 dark:bg-gray-800 aspect-video">
