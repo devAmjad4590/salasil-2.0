@@ -1,10 +1,8 @@
 'use client'
-import { addWatchedVideo } from '@/app/lib/localStorage';
+import { useProgressStore } from '@/app/store/useProgressStore';
 import type { Playlist, Video } from '@/app/types'
 import React, { useEffect, useRef } from 'react'
 import 'video.js/dist/video-js.css'
-import { by, noVideos } from '@/app/static'
-import { useRouter } from 'next/navigation';
 
 interface VideoPlayerProps {
   video: Video;
@@ -14,75 +12,83 @@ interface VideoPlayerProps {
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
   const videoNode = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
-  const router = useRouter();
+  const { setVideoProgress, toggleVideoCompleted, completedVideos } = useProgressStore();
+  const lastUpdateTime = useRef(0);
 
   useEffect(() => {
-    const initVideoJs = async () => {
-      const videojs = (await import('video.js')).default;
-      await import('videojs-youtube');
+    let isCancelled = false;
+    const videoElement = videoNode.current; // Capture the DOM element
 
-      if (!video || !videoNode.current) {
-        return;
-      }
+    if (videoElement && video) {
+      const initPlayer = async () => {
+        const videojs = (await import('video.js')).default;
+        await import('videojs-youtube');
 
-      const videoSrc = `https://www.youtube.com/watch?v=${video.id}`;
+        // If the component has unmounted since this async function started, do nothing.
+        if (isCancelled) {
+          return;
+        }
 
-      if (!playerRef.current) {
-        const player = (playerRef.current = videojs(
-          videoNode.current,
-          {
-            autoplay: false,
-            controls: true,
-            responsive: true,
-            fluid: true,
-            techOrder: ['youtube'],
-            sources: [
-              {
-                src: videoSrc,
-                type: 'video/youtube',
-              },
-            ],
-          },
-          () => {
-            console.log('player is ready');
-          }
-        ));
-        player.on('ended', () => {
-            addWatchedVideo(playlist.id, video.id);
-            const currentIndex = playlist.videos.findIndex(v => v.id === video.id);
-            if (currentIndex !== -1 && currentIndex < playlist.videos.length - 1) {
-                const nextVideo = playlist.videos[currentIndex + 1];
-                router.push(`/playlist/${playlist.id}/${nextVideo.id}`);
-            }
+        // Dispose of the previous player if it exists
+        if (playerRef.current) {
+          playerRef.current.dispose();
+        }
+
+        const videoSrc = `https://www.youtube.com/watch?v=${video.id}`;
+
+        const player = videojs(videoElement, {
+          autoplay: false,
+          controls: true,
+          responsive: true,
+          fluid: true,
+          techOrder: ['youtube'],
+          sources: [{ src: videoSrc, type: 'video/youtube' }],
         });
-      } else {
-        const player = playerRef.current;
-        player.src({ src: videoSrc, type: 'video/youtube' });
-      }
-    };
 
-    initVideoJs();
+        playerRef.current = player;
 
-  }, [video, playlist.id, router]);
+        // --- Event Listeners ---
+        const onEnded = () => toggleVideoCompleted(playlist.id, video.id);
 
-  // Dispose the player when the component unmounts
-  useEffect(() => {
-    const player = playerRef.current;
+        const COMPLETION_THRESHOLD = 95; // %
+        const onTimeUpdate = () => {
+          const now = Date.now();
+          if (now - lastUpdateTime.current > 5000) {
+            const duration = player.duration();
+            const currentTime = player.currentTime();
+            if (duration && currentTime) {
+              const progress = (currentTime / duration) * 100;
+              if (!isNaN(progress) && progress > 0) {
+                setVideoProgress(video.id, Math.round(progress));
+                lastUpdateTime.current = now;
+
+                // Mark as completed if threshold reached and not already completed
+                // Also ensures that completedVideos is initialized before accessing its properties
+                if (progress >= COMPLETION_THRESHOLD && (!completedVideos[playlist.id] || !completedVideos[playlist.id].has(video.id))) {
+                  toggleVideoCompleted(playlist.id, video.id);
+                }
+              }
+            }
+          }
+        };
+
+        player.on('ended', onEnded);
+        player.on('timeupdate', onTimeUpdate);
+      };
+
+      initPlayer();
+    }
+
+    // Cleanup function
     return () => {
-      if (player && !player.isDisposed()) {
-        player.dispose();
+      isCancelled = true;
+      // Dispose of the player when the component unmounts
+      if (playerRef.current) {
+        playerRef.current.dispose();
         playerRef.current = null;
       }
     };
-  }, []);
-
-  if (!video) {
-    return (
-      <div className="lg:col-span-2 flex flex-col gap-6 items-center justify-center bg-black rounded-xl aspect-video">
-        <p className="text-white">{noVideos}</p>
-      </div>
-    );
-  }
+  }, [video, playlist, setVideoProgress, toggleVideoCompleted, completedVideos]);
 
   return (
     <div className="lg:col-span-2 flex flex-col gap-0">
@@ -94,18 +100,14 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
       <div dir="rtl" className="flex flex-col gap-2 p-2">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-1">{video.title}</h1>
-            <p className="text-lg text-gray-600 dark:text-gray-400">
-              {by} <span className="font-medium text-primary">{playlist.participants.join(', ')}</span>
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <button className="p-2 text-gray-500 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-              <span className="material-icons-round">share</span>
-            </button>
-            <button className="p-2 text-gray-500 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors">
-              <span className="material-icons-round">bookmark_border</span>
-            </button>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{video.title}</h1>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                <span>من سلسلة: </span>
+                <span className="font-semibold text-primary">{playlist.name}</span>
+                <span className="mx-2">|</span>
+                <span>قناة: </span>
+                <span className="font-semibold text-primary">{playlist.channel}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -114,3 +116,4 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
 };
 
 export default VideoPlayer;
+
