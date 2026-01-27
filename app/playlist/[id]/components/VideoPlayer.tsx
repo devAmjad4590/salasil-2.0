@@ -37,7 +37,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
         const videoSrc = `https://www.youtube.com/watch?v=${video.id}`;
 
         const player = videojs(videoElement, {
-          autoplay: false,
+          autoplay: true,
           controls: true,
           responsive: true,
           fluid: true,
@@ -88,7 +88,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
         playerRef.current = null;
       }
     };
-  }, [video, playlist, setVideoProgress, toggleVideoCompleted, completedVideos]);
+  }, [video.id, playlist.id, setVideoProgress, toggleVideoCompleted, completedVideos]);
 
   return (
     <div className="lg:col-span-2 flex flex-col gap-0">
