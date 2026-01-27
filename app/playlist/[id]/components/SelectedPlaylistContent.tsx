@@ -1,35 +1,46 @@
 'use client'
 // app/playlist/[id]/components/SelectedPlaylistContent.tsx
 import ContentCard from './ContentCard'
-import { Playlist } from '@/app/types'
-import { useState, useEffect } from 'react'
-import { getWatchedVideos, addWatchedVideo, removeWatchedVideo } from '@/app/lib/localStorage'
+import { Playlist} from '@/app/types'
+import { useProgressStore } from '@/app/store/useProgressStore'
+import React, { useState, useEffect } from 'react';
 
 interface SelectedPlaylistContentProps {
   playlist: Playlist
 }
 
 const SelectedPlaylistContent: React.FC<SelectedPlaylistContentProps> = ({ playlist }) => {
-    const [watchedVideos, setWatchedVideos] = useState<string[]>([]);
+  const { completedVideos, videoProgress, notes, toggleVideoCompleted } = useProgressStore();
+  const [isClient, setIsClient] = useState(false);
 
-    useEffect(() => {
-        setWatchedVideos(getWatchedVideos(playlist.id));
-    }, [playlist.id]);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
-    const handleToggleWatched = (videoId: string) => {
-        const wasWatched = watchedVideos.includes(videoId);
+  const getStatus = (videoId: string): any => {
+    if (!isClient) return 'not-started';
+    const isCompleted = completedVideos[playlist.id]?.has(videoId);
+    if (isCompleted) {
+      return 'completed';
+    }
+    if (videoProgress[videoId] > 0) {
+      return 'in-progress';
+    }
+    return 'not-started';
+  };
 
-        if (wasWatched) {
-            removeWatchedVideo(playlist.id, videoId);
-            setWatchedVideos(watchedVideos.filter(id => id !== videoId));
-        } else {
-            addWatchedVideo(playlist.id, videoId);
-            setWatchedVideos([...watchedVideos, videoId]);
-        }
-    };
+  const getNotesCount = (videoId: string): number => {
+    if (!isClient) return 0;
+    return notes[videoId]?.length || 0;
+  };
 
   if (!playlist) {
     return <div>Loading...</div>
+  }
+
+  if (!isClient) {
+    // You can render a loading skeleton here if you want
+    return null;
   }
 
   return (
@@ -44,10 +55,9 @@ const SelectedPlaylistContent: React.FC<SelectedPlaylistContentProps> = ({ playl
             title={video.title}
             videoId={video.id}
             playlistId={playlist.id}
-            // The status will be expanded later to include 'in-progress'
-            status={watchedVideos.includes(video.id) ? 'completed' : 'not-started'}
-            notesCount={0} // Placeholder for notes count
-            onToggle={handleToggleWatched}
+            status={getStatus(video.id)}
+            notesCount={getNotesCount(video.id)}
+            onToggle={() => toggleVideoCompleted(playlist.id, video.id)}
           />
         ))}
       </div>

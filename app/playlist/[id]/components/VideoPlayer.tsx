@@ -1,9 +1,8 @@
 'use client'
-import { addWatchedVideo } from '@/app/lib/localStorage';
+import { useProgressStore } from '@/app/store/useProgressStore';
 import type { Playlist, Video } from '@/app/types'
 import React, { useEffect, useRef } from 'react'
 import 'video.js/dist/video-js.css'
-import { by, noVideos } from '@/app/static'
 
 interface VideoPlayerProps {
   video: Video;
@@ -13,69 +12,83 @@ interface VideoPlayerProps {
 const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
   const videoNode = useRef<HTMLVideoElement>(null);
   const playerRef = useRef<any>(null);
+  const { setVideoProgress, toggleVideoCompleted, completedVideos } = useProgressStore();
+  const lastUpdateTime = useRef(0);
 
   useEffect(() => {
-    const initVideoJs = async () => {
-      const videojs = (await import('video.js')).default;
-      await import('videojs-youtube');
+    let isCancelled = false;
+    const videoElement = videoNode.current; // Capture the DOM element
 
-      if (!video || !videoNode.current) {
-        return;
-      }
+    if (videoElement && video) {
+      const initPlayer = async () => {
+        const videojs = (await import('video.js')).default;
+        await import('videojs-youtube');
 
-      const videoSrc = `https://www.youtube.com/watch?v=${video.id}`;
+        // If the component has unmounted since this async function started, do nothing.
+        if (isCancelled) {
+          return;
+        }
 
-      if (!playerRef.current) {
-        const player = (playerRef.current = videojs(
-          videoNode.current,
-          {
-            autoplay: false,
-            controls: true,
-            responsive: true,
-            fluid: true,
-            techOrder: ['youtube'],
-            sources: [
-              {
-                src: videoSrc,
-                type: 'video/youtube',
-              },
-            ],
-          },
-          () => {
-            console.log('player is ready');
-          }
-        ));
-        player.on('ended', () => {
-            addWatchedVideo(playlist.id, video.id);
+        // Dispose of the previous player if it exists
+        if (playerRef.current) {
+          playerRef.current.dispose();
+        }
+
+        const videoSrc = `https://www.youtube.com/watch?v=${video.id}`;
+
+        const player = videojs(videoElement, {
+          autoplay: false,
+          controls: true,
+          responsive: true,
+          fluid: true,
+          techOrder: ['youtube'],
+          sources: [{ src: videoSrc, type: 'video/youtube' }],
         });
-      } else {
-        const player = playerRef.current;
-        player.src({ src: videoSrc, type: 'video/youtube' });
-      }
-    };
 
-    initVideoJs();
+        playerRef.current = player;
 
-  }, [video, playlist.id]);
+        // --- Event Listeners ---
+        const onEnded = () => toggleVideoCompleted(playlist.id, video.id);
 
-  // Dispose the player when the component unmounts
-  useEffect(() => {
-    const player = playerRef.current;
+        const COMPLETION_THRESHOLD = 95; // %
+        const onTimeUpdate = () => {
+          const now = Date.now();
+          if (now - lastUpdateTime.current > 5000) {
+            const duration = player.duration();
+            const currentTime = player.currentTime();
+            if (duration && currentTime) {
+              const progress = (currentTime / duration) * 100;
+              if (!isNaN(progress) && progress > 0) {
+                setVideoProgress(video.id, Math.round(progress));
+                lastUpdateTime.current = now;
+
+                // Mark as completed if threshold reached and not already completed
+                // Also ensures that completedVideos is initialized before accessing its properties
+                if (progress >= COMPLETION_THRESHOLD && (!completedVideos[playlist.id] || !completedVideos[playlist.id].has(video.id))) {
+                  toggleVideoCompleted(playlist.id, video.id);
+                }
+              }
+            }
+          }
+        };
+
+        player.on('ended', onEnded);
+        player.on('timeupdate', onTimeUpdate);
+      };
+
+      initPlayer();
+    }
+
+    // Cleanup function
     return () => {
-      if (player && !player.isDisposed()) {
-        player.dispose();
+      isCancelled = true;
+      // Dispose of the player when the component unmounts
+      if (playerRef.current) {
+        playerRef.current.dispose();
         playerRef.current = null;
       }
     };
-  }, []);
-
-  if (!video) {
-    return (
-      <div className="lg:col-span-2 flex flex-col gap-6 items-center justify-center bg-black rounded-xl aspect-video">
-        <p className="text-white">{noVideos}</p>
-      </div>
-    );
-  }
+  }, [video, playlist, setVideoProgress, toggleVideoCompleted, completedVideos]);
 
   return (
     <div className="lg:col-span-2 flex flex-col gap-0">
@@ -96,7 +109,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
                 <span className="font-semibold text-primary">{playlist.channel}</span>
             </div>
           </div>
-          {/* Icons have been removed from here */}
         </div>
       </div>
     </div>
@@ -104,3 +116,4 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ video, playlist }) => {
 };
 
 export default VideoPlayer;
+

@@ -1,18 +1,55 @@
 'use client';
-
 import { Playlist } from '@/app/types';
 import Link from 'next/link';
-import React from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { useProgressStore } from '@/app/store/useProgressStore';
 
-// NOTE: This component is currently using placeholder data.
-// It will need to be connected to a state management solution (e.g., Zustand, Context)
-// to get real user progress, notes count, and the next video to watch.
+const PersonalProgress = ({ playlist }: { playlist: Playlist } ) => {
+  const { completedVideos, notes, videoProgress: videoProgressMap } = useProgressStore();
+  const [isClient, setIsClient] = useState(false);
 
-const PersonalProgress = ({ playlist, firstVideoId }: { playlist: Playlist, firstVideoId: string }) => {
-  const nextVideo = "اسم الفيديو التالي هنا"; // Placeholder
-  const videoProgress = 30; // Placeholder
-  const playlistProgress = 10; // Placeholder
-  const notesCount = 5; // Placeholder
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const playlistCompletedVideos = useMemo(() => {
+    if (!isClient) return new Set();
+    return new Set(completedVideos[playlist.id] || []);
+  }, [isClient, completedVideos, playlist.id]);
+
+  const playlistProgress = useMemo(() => {
+    if (!isClient || !playlist.videos || playlist.videos.length === 0) {
+      return 0;
+    }
+    return Math.round((playlistCompletedVideos.size / playlist.videos.length) * 100);
+  }, [isClient, playlistCompletedVideos, playlist.videos]);
+
+  const notesCount = useMemo(() => {
+    if (!isClient) return 0;
+    const count = playlist.videos.reduce((acc, video) => {
+        return acc + (notes[video.id]?.length || 0);
+    }, 0);
+    return count;
+  }, [isClient, notes, playlist.videos]);
+
+  const { nextVideo, continueWatchingId } = useMemo(() => {
+    if (!isClient) return { nextVideo: "...", continueWatchingId: playlist.videos.length > 0 ? playlist.videos[0].id : "" };
+    const firstUnwatchedVideo = playlist.videos.find(video => !playlistCompletedVideos.has(video.id));
+    if (firstUnwatchedVideo) {
+      return { nextVideo: firstUnwatchedVideo.title, continueWatchingId: firstUnwatchedVideo.id };
+    }
+    if (playlist.videos.length > 0) {
+        return { nextVideo: playlist.videos[0].title, continueWatchingId: playlist.videos[0].id };
+    }
+    return { nextVideo: "...", continueWatchingId: "" };
+  }, [isClient, playlist.videos, playlistCompletedVideos]);
+
+  const videoProgress = isClient ? videoProgressMap[continueWatchingId] || 0 : 0;
+
+  if (!isClient) {
+    // You can render a loading skeleton here if you want
+    return null;
+  }
 
   return (
     <div className="bg-card-light dark:bg-card-dark rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6">
@@ -67,8 +104,8 @@ const PersonalProgress = ({ playlist, firstVideoId }: { playlist: Playlist, firs
 
       {/* Action Button */}
       <div className="mt-6">
-        <Link 
-          href={`/playlist/${playlist.id}/${firstVideoId}`} 
+        <Link
+          href={`/playlist/${playlist.id}/${continueWatchingId}`}
           className="inline-flex items-center px-8 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all transform hover:scale-105 cursor-pointer"
         >
           <span className="material-icons-round mr-2">play_arrow</span>

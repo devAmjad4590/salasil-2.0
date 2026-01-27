@@ -20,7 +20,7 @@ const WatchStatusIcon: React.FC<{ status: WatchStatus }> = ({ status }) => {
         case 'completed':
             return <span className="material-icons-round text-green-500" title="مكتمل">check_circle</span>;
         case 'in-progress':
-            return <span className="material-icons-round text-yellow-500" title="قيد المشاهدة">hourglass_bottom</span>;
+            return <span className="material-icons-round text-xs text-yellow-500" title="قيد المشاهدة">hourglass_bottom</span>;
         case 'not-started':
         default:
             return <span className="material-icons-round text-gray-400" title="لم تتم مشاهدته">radio_button_unchecked</span>;
@@ -36,8 +36,11 @@ const ContentCard: React.FC<ContentCardProps> = ({ title, videoId, playlistId, s
 
     const imageUrl = `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
 
+    const inProgressClasses = status === 'in-progress' ? 'bg-yellow-50/50 dark:bg-yellow-900/10' : '';
+    const completedClasses = status === 'completed' ? 'bg-green-50/50 dark:bg-green-900/10' : '';
+
     return (
-        <Link href={`/playlist/${playlistId}/${videoId}`} dir="rtl" className={`block group relative transition-colors cursor-pointer p-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-gray-700/30 ${status === 'completed' ? 'bg-green-50/50 dark:bg-green-900/10' : ''}`}>
+        <Link href={`/playlist/${playlistId}/${videoId}`} dir="rtl" className={`block group relative transition-colors cursor-pointer p-4 sm:px-6 hover:bg-gray-50 dark:hover:bg-gray-700/30 ${completedClasses} ${inProgressClasses}`}>
             <div className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-x-4">
                 
                 {/* Column 1: Thumbnail */}
@@ -74,4 +77,3 @@ const ContentCard: React.FC<ContentCardProps> = ({ title, videoId, playlistId, s
 };
 
 export default ContentCard;
-
